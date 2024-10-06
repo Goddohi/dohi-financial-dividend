@@ -1,5 +1,6 @@
 package com.dividends.dohi.persist.entity;
 
+import com.dividends.dohi.model.Company;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +20,9 @@ public class CompanyEntity {
     private String ticker;
 
     private String name;
+
+    public CompanyEntity(Company company) {
+        this.ticker = company.getTicker();
+        this.name = company.getName();
+    }
 }

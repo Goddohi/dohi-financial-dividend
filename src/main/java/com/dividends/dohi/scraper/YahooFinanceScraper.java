@@ -10,12 +10,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class YahooFinanceScraper implements Scraper {
     //스트링 포멧사용
 
