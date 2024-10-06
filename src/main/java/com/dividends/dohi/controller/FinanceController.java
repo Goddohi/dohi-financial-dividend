@@ -1,5 +1,6 @@
 package com.dividends.dohi.controller;
 
+import com.dividends.dohi.service.FinanceService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class FinanceController {
 
+    private final FinanceService financeService;
+
     /**
      * 배당금조회
      * @param companyName
-     * @return
      */
     @GetMapping("/dividend/{companyName}")
     public ResponseEntity<?> searchFinance(@PathVariable String companyName) {
-        return null;
+        var result = this.financeService.getDividendByCompanyName(companyName);
+        return ResponseEntity.ok(result);
     }
 
 }

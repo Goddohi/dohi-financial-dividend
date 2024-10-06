@@ -1,11 +1,16 @@
 package com.dividends.dohi.controller;
 
 import com.dividends.dohi.model.Company;
+import com.dividends.dohi.persist.entity.CompanyEntity;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import com.dividends.dohi.service.CompanyService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/company") //공통경로
@@ -26,11 +31,15 @@ public class CompanyController {
      * 회사 리스트 조회
      */
     @GetMapping
-    public ResponseEntity<?> searchCompany() {
-        return null;
+    public ResponseEntity<?> searchCompany(Pageable pageable) {
+        Page<CompanyEntity> companyEntities = this.companyService.getAllCompany(pageable);
+        return ResponseEntity.ok(companyEntities);
     }
+
     /**
-     * 배당금 데이터 저장
+     * 회사 및 배당금 저장
+     * @param request
+     * @return
      */
     @PostMapping
     public ResponseEntity<?> addCompany(@RequestBody Company request){

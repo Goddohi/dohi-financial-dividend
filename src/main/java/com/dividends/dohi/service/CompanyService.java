@@ -10,6 +10,8 @@ import com.dividends.dohi.scraper.Scraper;
 import com.dividends.dohi.scraper.YahooFinanceScraper;
 import lombok.AllArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -25,7 +27,7 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
 
-
+    // storeCompanyAndDividend사용
     public Company save(String ticker){
         boolean exists = companyRepository.existsByTicker(ticker);
         if(exists){
@@ -34,6 +36,15 @@ public class CompanyService {
         return  this.storeCompanyAndDividend(ticker);
     }
 
+
+    public Page<CompanyEntity> getAllCompany(Pageable pageable){
+        return this.companyRepository.findAll(pageable);
+    }
+
+
+
+
+    //save에서 사용
     private Company storeCompanyAndDividend(String ticker){
         //ticker를 기준으로 회사를 스크래핑
         Company company = this.yahooFinanceScraper.scrapCompanyByTicker(ticker);
