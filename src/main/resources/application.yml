@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: dohi-financial
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: create # 프로젝트를 재실행할때 데이터베이스 스키마 자동 업데이트
+    show-sql: true #SQL이 잘 실행되는지 보여줌
+    defer-datasource-initialization: true  # 데이터 소스 초기화를 지연시킴 (데이터베이스가 완전히 준비된 후 스키마 및 데이터 초기화 수행)
+
+  datasource:
+    driver-class-name: org.h2.Driver # H2 데이터베이스의 드라이버 클래스
+    url: jdbc:h2:mem:dohi;DB_CLOSE_DELAY=-1 # 메모리 기반 H2 DB 사용, 애플리케이션이 종료될 때까지 DB 유지
+    username: sa
+    password:
