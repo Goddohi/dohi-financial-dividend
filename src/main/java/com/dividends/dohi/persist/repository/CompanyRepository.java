@@ -1,6 +1,8 @@
 package com.dividends.dohi.persist.repository;
 
 import com.dividends.dohi.persist.entity.CompanyEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -11,4 +13,6 @@ public interface CompanyRepository extends JpaRepository<CompanyEntity, Long> {
     Optional<CompanyEntity> findByName(String name);
 
     Optional<CompanyEntity> findByTicker(String ticker);
+
+    Page<CompanyEntity> findByNameStartingWithIgnoreCase(String s, Pageable pageable);
 }

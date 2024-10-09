@@ -24,7 +24,12 @@ public class CompanyController {
      */
     @GetMapping("/autocomplete")
     public ResponseEntity<?> autocompleteCompany(@RequestParam String keyword) {
-        return null;
+        //trie 사용
+       // var result = companyService.autocomplete(keyword);
+        //DB like 사용
+       var result = companyService.getCompanyNameByKeyword(keyword);
+       //trie -> 서버 메모리 부하   DB 방식 -> DB 서버 과부화
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -48,6 +53,8 @@ public class CompanyController {
             throw new RuntimeException("ticker is empty");
         }
         Company company = this.companyService.save(ticker);
+        //회사를 저장할떄마다 Trie에 회사저장
+        //this.companyService.addAutocompleteKeyword(company.getName());
         return ResponseEntity.ok(company);
     }
 

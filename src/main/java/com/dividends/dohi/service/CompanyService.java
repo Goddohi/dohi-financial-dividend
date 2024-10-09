@@ -7,23 +7,25 @@ import com.dividends.dohi.persist.entity.DividendEntity;
 import com.dividends.dohi.persist.repository.CompanyRepository;
 import com.dividends.dohi.persist.repository.DividendRepository;
 import com.dividends.dohi.scraper.Scraper;
-import com.dividends.dohi.scraper.YahooFinanceScraper;
 import lombok.AllArgsConstructor;
 
+import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CompanyService {
 
+    private final Trie trie;
     private final Scraper yahooFinanceScraper;
+
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
 
@@ -40,9 +42,6 @@ public class CompanyService {
     public Page<CompanyEntity> getAllCompany(Pageable pageable){
         return this.companyRepository.findAll(pageable);
     }
-
-
-
 
     //save에서 사용
     private Company storeCompanyAndDividend(String ticker){
@@ -66,4 +65,32 @@ public class CompanyService {
 
         return company;
     }
+
+
+    public void addAutocompleteKeyword(String keyword) {
+        this.trie.put(keyword, null);
+    }
+
+    public List<String> autocomplete(String keyword) {
+        return (List<String>) this.trie.prefixMap(keyword).keySet()
+                .stream()
+                // .limit(10) //갯수제한
+                .collect(Collectors.toList());
+    }
+
+    public void deleteAutocompleteKeyword(String keyword) {
+        this.trie.remove(keyword);
+    }
+//autocomplte과 동일한 로직 (sql의 like)
+    public List<String> getCompanyNameByKeyword(String keyword) {
+        Pageable limit = PageRequest.of(0,10); //리미트와 같은 느낌
+        Page<CompanyEntity> companyEntities =  this.companyRepository.findByNameStartingWithIgnoreCase(keyword,limit);
+        return companyEntities.stream()
+                .map(e->e.getName())
+                .collect(Collectors.toList());
+    }
+
+
+
+
 }
