@@ -2,6 +2,7 @@ package com.dividends.dohi.scheduler;
 
 import com.dividends.dohi.model.Company;
 import com.dividends.dohi.model.ScrapedResult;
+import com.dividends.dohi.model.constants.CacheKey;
 import com.dividends.dohi.persist.entity.CompanyEntity;
 import com.dividends.dohi.persist.entity.DividendEntity;
 import com.dividends.dohi.persist.repository.CompanyRepository;
@@ -9,6 +10,9 @@ import com.dividends.dohi.persist.repository.DividendRepository;
 import com.dividends.dohi.scraper.Scraper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +20,7 @@ import java.util.List;
 
 @Slf4j //로깅
 @Component
+@EnableCaching
 @AllArgsConstructor
 public class ScraperScheduler {
 /*
@@ -31,6 +36,8 @@ public class ScraperScheduler {
     private final Scraper yahooFinanceScraper;
 
 //java파일에 cron같은경우 하드코딩이 되어있으면 변경이 필요할때 서비스 운영중에 멈췄다가 해야한다 .
+
+    @CacheEvict(value = CacheKey.KEY_FINANCE, allEntries = true) //캐시 삭제 후 다시넣기 위해 삭제
     @Scheduled(cron = "${scheduler.scrap.yahoo}")
     public void yahooFinanaceScheduled() {
         log.info("scraping scheduler is started");
