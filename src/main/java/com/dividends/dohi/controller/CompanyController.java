@@ -1,11 +1,15 @@
 package com.dividends.dohi.controller;
 
 import com.dividends.dohi.model.Company;
+import com.dividends.dohi.model.constants.CacheKey;
 import com.dividends.dohi.persist.entity.CompanyEntity;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import com.dividends.dohi.service.CompanyService;
@@ -19,6 +23,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
+    private final CacheManager cacheManager;
     /**
      * 배당금 검색할때 자동완성
      */
@@ -36,6 +41,7 @@ public class CompanyController {
      * 회사 리스트 조회
      */
     @GetMapping
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<?> searchCompany(Pageable pageable) {
         Page<CompanyEntity> companyEntities = this.companyService.getAllCompany(pageable);
         return ResponseEntity.ok(companyEntities);
@@ -47,6 +53,7 @@ public class CompanyController {
      * @return
      */
     @PostMapping
+    @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<?> addCompany(@RequestBody Company request){
         String ticker = request.getTicker().trim();
         if(ObjectUtils.isEmpty(ticker)){
@@ -58,9 +65,14 @@ public class CompanyController {
         return ResponseEntity.ok(company);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteCompany(){
+    @DeleteMapping("/{ticker}")
+    @PreAuthorize("hasRole('WRITE')")
+    public ResponseEntity<?> deleteCompany(@PathVariable String ticker)
+    { String companyName = this.companyService.deleteCompany(ticker);
+
         return null;
     }
-
+    public void clearFinanceCache(String companyName){
+        this.cacheManager.getCache(CacheKey.KEY_FINANCE).evict(companyName);
+    }
 }

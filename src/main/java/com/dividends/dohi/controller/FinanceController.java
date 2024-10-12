@@ -3,6 +3,7 @@ package com.dividends.dohi.controller;
 import com.dividends.dohi.service.FinanceService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class FinanceController {
      * @param companyName
      */
     @GetMapping("/dividend/{companyName}")
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<?> searchFinance(@PathVariable String companyName) {
         var result = this.financeService.getDividendByCompanyName(companyName);
         return ResponseEntity.ok(result);

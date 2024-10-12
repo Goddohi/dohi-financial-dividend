@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: dohi-financial
@@ -24,6 +27,9 @@ spring:
       host: localhost
       port: 6379
 
+  jwt:
+    secret: ZG9oaS1zcHJpbmctYm9vdC1kaXZpZGVuZC1wcm9qZWN0LWp3dC1zZWNyZXQta2V5Cg==
+#echo 'dohi-spring-boot-dividend-project-jwt-secret-key' | base64
 
 
 scheduler:
