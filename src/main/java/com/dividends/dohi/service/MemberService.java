@@ -1,6 +1,7 @@
 package com.dividends.dohi.service;
 
 
+import com.dividends.dohi.exception.impl.AlreadyExistUserException;
 import com.dividends.dohi.model.Auth;
 import com.dividends.dohi.persist.entity.MemberEntity;
 import com.dividends.dohi.persist.repository.MemberRepository;
@@ -28,7 +29,7 @@ public class MemberService implements UserDetailsService {
     public MemberEntity register(Auth.SignUp member){
         boolean exists = this.memberRepository.existsByUsername(member.getUsername());
         if (exists){
-            throw new RuntimeException("이미사용중인 아이디");
+            throw new AlreadyExistUserException();
         }
         member.setPassword(this.passwordEncoder.encode(member.getPassword()));
         return this.memberRepository.save(member.toEntity());
@@ -37,7 +38,7 @@ public class MemberService implements UserDetailsService {
     public MemberEntity authenticate(Auth.SignIn member){
 
         var user = this.memberRepository.findByUsername(member.getUsername())
-                .orElseThrow(()-> new RuntimeException("존재하지 않는 ID입니다 ."));
+                .orElseThrow(()-> new RuntimeException("존재하지 않는 ID입니다."));
 
         if(!this.passwordEncoder.matches(member.getPassword(), user.getPassword())){
            throw new RuntimeException("비밀번호가 일치하지 않습니다");

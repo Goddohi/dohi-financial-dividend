@@ -1,5 +1,6 @@
 package com.dividends.dohi.service;
 
+import com.dividends.dohi.exception.impl.NoCompanyException;
 import com.dividends.dohi.model.Company;
 import com.dividends.dohi.model.Dividend;
 import com.dividends.dohi.model.ScrapedResult;
@@ -34,7 +35,7 @@ public class FinanceService {
 
         // 1. 회사명을 기준으로 회사 정보를 조회
         CompanyEntity companyEntity = this.companyRepository.findByName(companyName)
-                .orElseThrow(()-> new RuntimeException("Company not found"));
+                .orElseThrow(()-> new NoCompanyException());
         // 2. 조회된 회사 ID 로 배당금 정보 조회
         List<DividendEntity> dividendEntities = this.dividendRepository.findAllByCompanyId(companyEntity.getId());
         // 3. 결과 조합 후 반환

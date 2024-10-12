@@ -1,5 +1,6 @@
 package com.dividends.dohi.service;
 
+import com.dividends.dohi.exception.impl.NoCompanyException;
 import com.dividends.dohi.model.Company;
 import com.dividends.dohi.model.ScrapedResult;
 import com.dividends.dohi.persist.entity.CompanyEntity;
@@ -92,7 +93,7 @@ public class CompanyService {
 
     public String deleteCompany(String ticker){
         var company = this.companyRepository.findByTicker(ticker)
-                .orElseThrow(()->new RuntimeException("존재하지 않는 회사입니다."));
+                .orElseThrow(()->new NoCompanyException());
 
         this.dividendRepository.deleteAllByCompanyId(company.getId());
         this.companyRepository.delete(company);
