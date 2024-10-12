@@ -60,8 +60,8 @@ public class ScraperScheduler {
                         boolean exists = this.dividendRepository.existsByCompanyIdAndDate(e.getCompanyId(), e.getDate());
                         // 엘리먼트를 하나씩 디비든 레파지토리에 삽입
                         if(!exists) {
-                            log.info("---SAVE---scraping scheduler is SAVE " + comapany.getName());
                             this.dividendRepository.save(e);
+                            log.info("insert new dividemd ->"+  e.toString());
                         }
                     });
 
